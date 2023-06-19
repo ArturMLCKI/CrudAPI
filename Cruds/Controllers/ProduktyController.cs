@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cruds.Controllers
 {
@@ -7,63 +8,65 @@ namespace Cruds.Controllers
     [ApiController]
     public class ProduktyController : ControllerBase
     {
-        private static List<Produkty> produktys = new List<Produkty>
+        
+        private readonly DataContext _context;
+        public ProduktyController(DataContext context)
         {
-            new Produkty
-            { 
-                Id = 1,
-                Name = "Telefon",
-                Desctripiton = "Samsung"
-            }
-        };
+
+            _context = context;
+
+        }
         [HttpGet]
         public async Task<ActionResult<List<Produkty>>> Get()
         {
-            return Ok(produktys);
+            return Ok(await _context.Produktys.ToListAsync());
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<List<Produkty>>> Get(int id)
         {
-            var produkt = produktys.Find(p => p.Id == id);
+            var produkt = await _context.Produktys.FindAsync(id);
             if (produkt == null )
             {
                 return BadRequest("Nie znaleziony.");
                 
             }
-            return Ok(produktys);
+            return Ok(produkt);
         }
         [HttpPost]
         public async Task<ActionResult<List<Produkty>>> AddProdukty(Produkty produkty)
         {
-            produktys.Add(produkty);
-            return Ok(produkty);
+            _context.Produktys.Add(produkty);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Produktys.ToListAsync());
         }
         [HttpPut]
         public async Task<ActionResult<List<Produkty>>> UpdateProdukty(Produkty request)
         {
-            var produkt = produktys.Find(p => p.Id == request.Id);
-            if (produkt == null)
+            var dbprodukt = await _context.Produktys.FindAsync(request.Id);
+            if (dbprodukt == null)
             {
                 return BadRequest("Nie znaleziony.");
 
             }
 
-            produkt.Name = request.Name;
-            produkt.Desctripiton = request.Desctripiton;
-
-            return Ok(produktys);
+            dbprodukt.Name = request.Name;
+            dbprodukt.Desctripiton = request.Desctripiton;
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Produktys.ToListAsync());
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Produkty>>> Delete(int id)
         {
-            var produkt = produktys.Find(p => p.Id == id);
-            if (produkt == null)
+            var dbprodukt = await _context.Produktys.FindAsync(id);
+            if (dbprodukt == null)
             {
                 return BadRequest("Nie znaleziony.");
 
             }
-            produktys.Remove(produkt);
-            return Ok(produktys);
+            _context.Produktys.Remove(dbprodukt);
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Produktys.ToListAsync());
         }
     }
 }
