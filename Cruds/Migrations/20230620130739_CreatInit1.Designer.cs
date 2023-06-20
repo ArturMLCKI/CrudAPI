@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cruds.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230619131653_Init")]
-    partial class Init
+    [Migration("20230620130739_CreatInit1")]
+    partial class CreatInit1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,31 @@ namespace Cruds.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Produktys");
+                });
+
+            modelBuilder.Entity("Cruds.car", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Marka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("cars");
                 });
 #pragma warning restore 612, 618
         }

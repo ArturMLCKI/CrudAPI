@@ -5,7 +5,7 @@
 namespace Cruds.Migrations
 {
     /// <inheritdoc />
-    public partial class lol : Migration
+    public partial class CreatInit1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
