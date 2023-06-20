@@ -4,6 +4,7 @@ using Cruds.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cruds.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230620133907_InitialCreate3")]
+    partial class InitialCreate3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,8 +27,9 @@ namespace Cruds.Migrations
 
             modelBuilder.Entity("Cruds.Produkty", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Desctripiton")
                         .IsRequired()
@@ -56,33 +60,35 @@ namespace Cruds.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProduktyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProduktyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProduktyId")
+                        .IsUnique();
 
                     b.ToTable("cars");
                 });
 
-            modelBuilder.Entity("Cruds.Produkty", b =>
+            modelBuilder.Entity("Cruds.car", b =>
                 {
-                    b.HasOne("Cruds.car", "car")
-                        .WithOne("Produkty")
-                        .HasForeignKey("Cruds.Produkty", "Id")
-                        .HasPrincipalKey("Cruds.car", "ProduktyId")
+                    b.HasOne("Cruds.Produkty", "Produkty")
+                        .WithOne("car")
+                        .HasForeignKey("Cruds.car", "ProduktyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("car");
+                    b.Navigation("Produkty");
                 });
 
-            modelBuilder.Entity("Cruds.car", b =>
+            modelBuilder.Entity("Cruds.Produkty", b =>
                 {
-                    b.Navigation("Produkty")
+                    b.Navigation("car")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
