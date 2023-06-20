@@ -9,6 +9,8 @@ namespace Cruds.Data
         public DataContext(DbContextOptions<DataContext>options): base(options) { }
         
             public DbSet<Produkty> Produktys { get; set; }
+
+            public DbSet<car> cars { get; set; }
     
     }
 }
